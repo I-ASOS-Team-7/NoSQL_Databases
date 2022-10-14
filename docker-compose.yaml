@@ -4,8 +4,6 @@ networks:
     driver: bridge
   app-network:
     driver: bridge
-# env_file:
-#   - .env
 services:
   my_app:
     build: .
