@@ -26,6 +26,6 @@ class Neo4jDAO(DAO):
         # TODO - Docstring
         pass
 
-    def close_connection(self, **kwargs):
+    def close_connection(self):
         # TODO - Docstring
         pass

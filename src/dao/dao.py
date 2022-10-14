@@ -24,5 +24,5 @@ class DAO(ABC):
         pass
 
     @abstractmethod
-    def close_connection(self, **kwargs):
+    def close_connection(self):
         pass
