@@ -7,6 +7,8 @@ networks:
 services:
   my_app:
     build: .
+    env_file:
+      - .env
   neo4j:
     image: bitnami/neo4j:latest
     networks:
