@@ -9,27 +9,27 @@ services:
     build: .
     env_file:
       - .env
-  neo4j:
-    image: bitnami/neo4j:latest
-    networks:
-      - neo4j-network
-    ports:
-      - "7474:7474"
-      - "7473:7473"
-      - "7687:7687"
-  redis:
-    container_name: redis
-    hostname: redis
-    image: redis
-  redis-commander:
-    container_name: redis-commander
-    hostname: redis-commander
-    image: rediscommander/redis-commander:latest
-    restart: always
-    environment:
-      - REDIS_HOSTS=local:redis:6379
-    ports:
-      - "8082:8081"
+  # neo4j:
+  #   image: bitnami/neo4j:latest
+  #   networks:
+  #     - neo4j-network
+  #   ports:
+  #     - "7474:7474"
+  #     - "7473:7473"
+  #     - "7687:7687"
+  # redis:
+  #   container_name: redis
+  #   hostname: redis
+  #   image: redis
+  # redis-commander:
+  #   container_name: redis-commander
+  #   hostname: redis-commander
+  #   image: rediscommander/redis-commander:latest
+  #   restart: always
+  #   environment:
+  #     - REDIS_HOSTS=local:redis:6379
+  #   ports:
+  #     - "8082:8081"
   mongo:
     image: mongo
     restart: always
@@ -45,14 +45,14 @@ services:
       ME_CONFIG_MONGODB_ADMINUSERNAME: ${USERNAME}
       ME_CONFIG_MONGODB_ADMINPASSWORD: ${PASSWORD}
       ME_CONFIG_MONGODB_URL: mongodb://${USERNAME}:${PASSWORD}@mongo:27017/
-  cassandra:
-    image: cassandra:4.0
-    ports:
-      - 9042:9042
-    volumes:
-      - ~/apps/cassandra:/var/lib/cassandra
-    environment:
-      - CASSANDRA_CLUSTER_NAME=citizix
+  # cassandra:
+  #   image: cassandra:4.0
+  #   ports:
+  #     - 9042:9042
+  #   volumes:
+  #     - ~/apps/cassandra:/var/lib/cassandra
+  #   environment:
+  #     - CASSANDRA_CLUSTER_NAME=citizix
 volumes:
   cache:
     driver: local
