@@ -1,47 +1,44 @@
 import os
 
 from dotenv import load_dotenv
-from pymongo import errors, MongoClient
 
-load_dotenv()
+from dao.mongo_db_dao import MongoDbDAO
 
-PORT = 27017
-USERNAME = os.getenv("USERNAME")
-PASSWORD = os.getenv("PASSWORD")
 
-# use a try-except indentation to catch MongoClient() errors
-try:
+if __name__ == '__main__':
+    load_dotenv()
 
-    # try to instantiate a client instance
-    client = MongoClient(
-        # host=[str(DOMAIN) + ":" + str(PORT)],
-        host=f"mongo:{PORT}",
-        serverSelectionTimeoutMS=3000,  # 3 second timeout
-        username=USERNAME,
-        password=PASSWORD,
+    mongodb_dao = MongoDbDAO()
+
+    # mongodb_dao.insert_data(
+    #     database='mydatabase',
+    #     collection='customers',
+    #     data=[
+    #         {'name': 'Amy', 'address': 'Apple st 652'},
+    #         {'name': 'Hannah', 'address': 'Mountain 21'},
+    #         {'name': 'Michael', 'address': 'Valley 345'},
+    #         {'name': 'Sandy', 'address': 'Ocean blvd 2'},
+    #         {'name': 'Betty', 'address': 'Green Grass 1'},
+    #         {'name': 'Richard', 'address': 'Sky st 331'},
+    #         {'name': 'Susan', 'address': 'One way 98'},
+    #         {'name': 'Vicky', 'address': 'Yellow Garden 2'},
+    #         {'name': 'Ben', 'address': 'Park Lane 38'},
+    #         {'name': 'William', 'address': 'Central st 954'},
+    #         {'name': 'Chuck', 'address': 'Main Road 989'},
+    #         {'name': 'Viola', 'address': 'Sideway 1633'}
+    #     ]
+    # )
+
+    # mongodb_dao.read_data(database='mydatabase', collection='customers')
+
+    mongodb_dao.populate_database(
+        data_folder=os.path.join(os.getcwd(), 'data', 'mongodb_data')
     )
 
-    # print the version of MongoDB server if connection successful
-    print("server version:", client.server_info()["version"])
+    for collection in os.listdir(os.path.join(os.getcwd(), 'data', 'mongodb_data')):
 
-    mydb = client["mydatabase"]
-    mycol = mydb["customers"]
-
-    mydict = {"name": "John", "address": "Highway 37"}
-
-    x = mycol.insert_one(mydict)
-
-    print(f"Inserted: {mycol.find_one()}")
-
-    # get the database_names from the MongoClient()
-    database_names = client.list_database_names()
-
-except errors.ServerSelectionTimeoutError as err:
-    # set the client and DB name list to 'None' and `[]` if exception
-    client = None
-    database_names = []
-
-    # catch pymongo.errors.ServerSelectionTimeoutError
-    print("pymongo ERROR:", err)
-
-print("\ndatabases:", database_names)
+        print(f"main: {collection.split('.')[0]}")
+        mongodb_dao.read_data(
+            database='ASOS_2022',
+            collection=collection.split('.')[0]
+        )
