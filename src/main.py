@@ -1,4 +1,6 @@
+import statistics
 from dotenv import load_dotenv
+from stats.statistics import Statistics
 
 from utils import run_mongodb
 
@@ -6,4 +8,8 @@ from utils import run_mongodb
 if __name__ == '__main__':
     load_dotenv()
 
-    run_mongodb()
+    statistics = Statistics()
+
+    run_mongodb(statistics)
+
+    

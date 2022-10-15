@@ -1,18 +1,24 @@
 import json
 import os
+import time
 from typing import List, Union
 
 from pymongo import errors, MongoClient
 
 from dao.dao import DAO
+from stats.statistics import Statistics
 
 
 class MongoDbDAO(DAO):
 
     """Represents MongoDB Database Access Object."""
 
-    def __init__(self) -> None:
-        """Initializes the MongoDbDAO Class."""
+    def __init__(self, statistics: Statistics) -> None:
+        """Initializes the MongoDbDAO Class.
+        
+        Args:
+            statistics (Statistics): Database Testing Statistics Object.
+        """
         super().__init__()
 
         self.__port: int = 27017
@@ -20,6 +26,7 @@ class MongoDbDAO(DAO):
             username=os.getenv('USERNAME'),
             password=os.getenv('PASSWORD')
         )
+        self.__statistics: Statistics = statistics
 
     def create_connection(self, **kwargs: str) -> MongoClient:
         """Creates new MongoDB Connection.
@@ -68,9 +75,16 @@ class MongoDbDAO(DAO):
             'collection' and 'data' expected).
         """
         try:
+            start_time = time.time()
             (
                 self.__connection[kwargs['database']][kwargs['collection']]
                     .insert_many(kwargs['data'])
+            )
+            self.__statistics.add_insert_time(
+                database_type='MongoDB',
+                database=kwargs['database'],
+                dataset=kwargs['collection'],
+                time=time.time() - start_time
             )
 
         except errors.BulkWriteError as bwe:
@@ -84,12 +98,19 @@ class MongoDbDAO(DAO):
             **kwargs (Union[str, List[dict]]): Keyword Arguments ('database',
             'collection', 'old_values' and 'new_values' expected).
         """
+        start_time = time.time()
         (
             self.__connection[kwargs['database']][kwargs['collection']]
                 .update_many(
                     kwargs['old_values'], 
                     kwargs['new_values']
                 )
+        )
+        self.__statistics.add_update_time(
+            database_type='MongoDB',
+            database=kwargs['database'],
+            dataset=kwargs['collection'],
+            time=time.time() - start_time
         )
 
     def delete_data(self, **kwargs: str) -> None:
@@ -99,10 +120,18 @@ class MongoDbDAO(DAO):
             **kwargs (str): Keyword Arguments ('database' and 'collection' 
             expected).
         """
+        start_time = time.time()
         (
             self.__connection[kwargs['database']][kwargs['collection']]
                 .delete_many({})
         )
+        self.__statistics.add_delete_time(
+            database_type='MongoDB',
+            database=kwargs['database'],
+            dataset=kwargs['collection'],
+            time=time.time() - start_time
+        )
+
 
     def close_connection(self):
         """Closes MongoDB Connection."""
