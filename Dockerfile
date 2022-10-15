@@ -1,9 +1,10 @@
-FROM python:3.7-alpine
+FROM python:3
 
 ADD . /code
 WORKDIR /code
 
-RUN pip3 install -r requirements.txt
+RUN pip install --upgrade pip
+RUN pip install -r requirements.txt
 
 EXPOSE 27017
-CMD ["python3", "src/main.py"]
+CMD ["python", "src/main.py"]
