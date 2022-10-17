@@ -40,12 +40,7 @@ class MongoDbDAO(DAO):
         """
         try:
             connection = MongoClient(
-                host=f"mongodb://{kwargs['username']}:{kwargs['password']}@localhost:{self.__port}",
-                # host=f"mongodb://localhost:{self.__port}/",
-                serverSelectionTimeoutMS=3000,  # 3 second timeout
-                username=kwargs['username'],
-                password=kwargs['password'],
-                authSource="admin"
+                host=f"mongodb://localhost:{self.__port}/",
             )
 
         except errors.ServerSelectionTimeoutError as err:
