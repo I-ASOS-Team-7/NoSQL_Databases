@@ -41,7 +41,7 @@ def run_mongodb(
 
 		update_mapping = {
 			'data': {
-				'old_values': {'name': {'$regex': '^V'}},
+				'old_values': {'name': {'$regex': '.'}},
 				'new_values': {'$set': {'address': f'Docker_{iteration}'}}
 			}
 		}
