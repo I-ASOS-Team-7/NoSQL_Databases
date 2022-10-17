@@ -22,7 +22,7 @@ def run_mongodb(
 	mongodb_path = os.path.join(os.getcwd(), 'data', 'mongodb_data')
 	collections = sorted(os.listdir(mongodb_path))
 
-	for _ in range(iterations):
+	for iteration in range(iterations):
 		for collection in collections:
 			mongodb_dao.delete_data(
 				database=os.getenv('DB_NAME'),
@@ -33,16 +33,16 @@ def run_mongodb(
 			data_folder=mongodb_path
 		)
 
-		# for collection in collections:
-		#     mongodb_dao.read_data(
-		#         database=os.getenv('DB_NAME'),
-		#         collection=collection.split('.')[0]
-		#     )
+		for collection in collections:
+			mongodb_dao.read_data(
+				database=os.getenv('DB_NAME'),
+				collection=collection.split('.')[0]
+			)
 
 		update_mapping = {
 			'data': {
 				'old_values': {'name': {'$regex': '^V'}},
-				'new_values': {'$set': {'address': 'Docker'}}
+				'new_values': {'$set': {'address': f'Docker_{iteration}'}}
 			}
 		}
 
@@ -54,10 +54,10 @@ def run_mongodb(
 				new_values=value['new_values']
 			)
 
-		# mongodb_dao.read_data(
-		#     database=os.getenv('DB_NAME'),
-		#     collection='data'
-		# )
+		mongodb_dao.read_data(
+		    database=os.getenv('DB_NAME'),
+		    collection='data'
+		)
 
 	mongodb_dao.close_connection()
 
@@ -66,7 +66,12 @@ def run_couchdb(
 	statistics: Statistics,
 	iterations: Optional[int] = 10
 ) -> None:
-	# TODO - Docstring
+	"""Run basic CouchDB DAO Functionalities.
+
+	Args:
+		statistics (Statistics): Database Testing Statistics Object.
+		iterations (Optional[int]): Number of repetition. Defaults to 10.
+	"""
 	couchdb_dao = CouchDbDAO(statistics)
 
 	counchdb_path = os.path.join(os.getcwd(), 'data', 'mongodb_data')
