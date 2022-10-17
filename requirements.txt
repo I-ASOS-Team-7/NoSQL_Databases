@@ -1,4 +1,5 @@
 couchdb
+neo4j
 pandas
 pymongo
 python-dotenv

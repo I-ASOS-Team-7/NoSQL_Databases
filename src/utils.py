@@ -3,6 +3,7 @@ from typing import Optional
 
 from dao.couchdb_dao import CouchDbDAO
 from dao.mongo_db_dao import MongoDbDAO
+from dao.neo4j_dao import Neo4jDAO
 from dao.redis_dao import RedisDAO
 from stats.statistics import Statistics
 
@@ -98,6 +99,11 @@ def run_mongodb(
 			)
 
 	mongodb_dao.close_connection()
+
+
+def run_neo4j() -> None:
+	"""Run basic Neo4j DAO Functionalities."""
+	neo4j_dao = Neo4jDAO()
 
 
 def run_redis(
