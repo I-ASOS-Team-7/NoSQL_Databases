@@ -1,10 +1,55 @@
 import os
 from typing import Optional
+
 from dao.couchdb_dao import CouchDbDAO
-
-
 from dao.mongo_db_dao import MongoDbDAO
+from dao.redis_dao import RedisDAO
 from stats.statistics import Statistics
+
+def run_couchdb(
+	statistics: Statistics,
+	iterations: Optional[int] = 10
+) -> None:
+	"""Run basic CouchDB DAO Functionalities.
+
+	Args:
+		statistics (Statistics): Database Testing Statistics Object.
+		iterations (Optional[int]): Number of repetition. Defaults to 10.
+	"""
+	couchdb_dao = CouchDbDAO(statistics)
+
+	counchdb_path = os.path.join(os.getcwd(), 'data', 'json_data')
+	collections = sorted(os.listdir(counchdb_path))
+
+	for iteration in range(iterations):
+		couchdb_dao.populate_database(data_folder=counchdb_path)
+
+		for collection in collections:
+			print(collection.split('.')[0])
+			couchdb_dao.read_data(
+				database=os.getenv('DB_NAME'),
+				collection=collection.split('.')[0]
+			)
+
+			if collection == 'data.json':
+				couchdb_dao.update_data(
+					database=os.getenv('DB_NAME'),
+					collection=collection.split('.')[0],
+					doc_ids=[],
+					key='address',
+					new_value=f'Docker_{iteration}'
+				)
+
+				couchdb_dao.read_data(
+					database=os.getenv('DB_NAME'),
+					collection=collection.split('.')[0]
+				)
+
+		for collection in collections:
+		    couchdb_dao.delete_data(
+		        database=os.getenv('DB_NAME'),
+		        collection=collection.split('.')[0]
+		    )
 
 
 def run_mongodb(
@@ -19,7 +64,7 @@ def run_mongodb(
 	"""
 	mongodb_dao = MongoDbDAO(statistics)
 
-	mongodb_path = os.path.join(os.getcwd(), 'data', 'mongodb_data')
+	mongodb_path = os.path.join(os.getcwd(), 'data', 'json_data')
 	collections = sorted(os.listdir(mongodb_path))
 
 	for iteration in range(iterations):
@@ -61,48 +106,45 @@ def run_mongodb(
 
 	mongodb_dao.close_connection()
 
-
-def run_couchdb(
+def run_redis(
 	statistics: Statistics,
 	iterations: Optional[int] = 10
 ) -> None:
-	"""Run basic CouchDB DAO Functionalities.
+	"""Run basic Redis DAO Functionalities.
 
 	Args:
 		statistics (Statistics): Database Testing Statistics Object.
 		iterations (Optional[int]): Number of repetition. Defaults to 10.
 	"""
-	couchdb_dao = CouchDbDAO(statistics)
+	redis_dao = RedisDAO(statistics)
 
-	counchdb_path = os.path.join(os.getcwd(), 'data', 'mongodb_data')
-	collections = sorted(os.listdir(counchdb_path))
+	redis_path = os.path.join(os.getcwd(), 'data', 'json_data')
+	collections = sorted(os.listdir(redis_path))
 
 	for iteration in range(iterations):
-		couchdb_dao.populate_database(data_folder=counchdb_path)
-
 		for collection in collections:
-			print(collection.split('.')[0])
-			couchdb_dao.read_data(
+			redis_dao.delete_data(
 				database=os.getenv('DB_NAME'),
 				collection=collection.split('.')[0]
 			)
 
-			if collection == 'data.json':
-				couchdb_dao.update_data(
-					database=os.getenv('DB_NAME'),
-					collection=collection.split('.')[0],
-					doc_ids=[],
-					key='address',
-					new_value=f'Docker_{iteration}'
-				)
-
-				couchdb_dao.read_data(
-					database=os.getenv('DB_NAME'),
-					collection=collection.split('.')[0]
-				)
+		redis_dao.populate_database(data_folder=redis_path)
 
 		for collection in collections:
-		    couchdb_dao.delete_data(
-		        database=os.getenv('DB_NAME'),
-		        collection=collection.split('.')[0]
-		    )
+			redis_dao.read_data(
+				database=os.getenv('DB_NAME'),
+				collection=collection.split('.')[0]
+			)
+
+		redis_dao.update_data(
+			database=os.getenv('DB_NAME'),
+			collection='data',
+			doc_ids=[],
+			key='address',
+			new_value=f'Docker_{iteration}'
+		)
+
+		redis_dao.read_data(
+			database=os.getenv('DB_NAME'),
+			collection='data'
+		)
