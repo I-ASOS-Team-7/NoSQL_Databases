@@ -11,11 +11,11 @@ from stats.statistics import Statistics
 
 class MongoDbDAO(DAO):
 
-    """Represents MongoDB Database Access Object."""
+    """Represents MongoDB Data Access Object."""
 
     def __init__(self, statistics: Statistics) -> None:
         """Initializes the MongoDbDAO Class.
-        
+
         Args:
             statistics (Statistics): Database Testing Statistics Object.
         """
@@ -40,17 +40,12 @@ class MongoDbDAO(DAO):
         """
         try:
             connection = MongoClient(
-                host=f'mongo:{self.__port}',
-                serverSelectionTimeoutMS=3000,  # 3 second timeout
-                username=kwargs['username'],
-                password=kwargs['password'],
+                host=f"mongodb://localhost:{self.__port}/",
             )
 
         except errors.ServerSelectionTimeoutError as err:
             connection = None
-
             print('pymongo ERROR:', err)
-
             exit(-1)
 
         return connection
@@ -62,13 +57,14 @@ class MongoDbDAO(DAO):
             **kwargs (str): Keyword Arguments ('database' and 'collection' 
             expected).
         """
-        collection = self.__connection[kwargs['database']][kwargs['collection']]
-    
+        collection = self.__connection[kwargs['database']
+                                       ][kwargs['collection']]
+
         for entry in collection.find():
             print(entry)
 
     def insert_data(self, **kwargs: Union[str, List[dict]]) -> None:
-        """Inserts entries in Collection.
+        """Inserts entries to Collection.
 
         Args:
             **kwargs (Union[str, List[dict]]): Keyword Arguments ('database',
@@ -78,12 +74,13 @@ class MongoDbDAO(DAO):
             start_time = time.time()
             (
                 self.__connection[kwargs['database']][kwargs['collection']]
-                    .insert_many(kwargs['data'])
+                .insert_many(kwargs['data'])
             )
-            self.__statistics.add_insert_time(
+            self.__statistics.add_execution_time(
                 database_type='MongoDB',
                 database=kwargs['database'],
                 dataset=kwargs['collection'],
+                action='insert',
                 time=time.time() - start_time
             )
 
@@ -101,15 +98,16 @@ class MongoDbDAO(DAO):
         start_time = time.time()
         (
             self.__connection[kwargs['database']][kwargs['collection']]
-                .update_many(
-                    kwargs['old_values'], 
-                    kwargs['new_values']
-                )
+            .update_many(
+                kwargs['old_values'],
+                kwargs['new_values']
+            )
         )
-        self.__statistics.add_update_time(
+        self.__statistics.add_execution_time(
             database_type='MongoDB',
             database=kwargs['database'],
             dataset=kwargs['collection'],
+            action='update',
             time=time.time() - start_time
         )
 
@@ -123,15 +121,15 @@ class MongoDbDAO(DAO):
         start_time = time.time()
         (
             self.__connection[kwargs['database']][kwargs['collection']]
-                .delete_many({})
+            .delete_many({})
         )
-        self.__statistics.add_delete_time(
+        self.__statistics.add_execution_time(
             database_type='MongoDB',
             database=kwargs['database'],
             dataset=kwargs['collection'],
+            action='delete',
             time=time.time() - start_time
         )
-
 
     def close_connection(self):
         """Closes MongoDB Connection."""

@@ -1,14 +1,8 @@
 version: "3.9"
 networks:
-  neo4j-network:
-    driver: bridge
   app-network:
     driver: bridge
 services:
-  my_app:
-    build: .
-    env_file:
-      - .env
   # neo4j:
   #   image: bitnami/neo4j:latest
   #   networks:
@@ -32,26 +26,17 @@ services:
   mongo:
     image: mongo
     restart: always
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: ${USERNAME}
-      MONGO_INITDB_ROOT_PASSWORD: ${PASSWORD}
-  mongo-express:
-    image: mongo-express
-    restart: always
     ports:
-      - 8081:8081
+      - "27017:27017"
+  couchdb:
+    image: couchdb:latest
+    ports:
+      - "5984:5984"
+    env_file:
+      - .env
     environment:
-      ME_CONFIG_MONGODB_ADMINUSERNAME: ${USERNAME}
-      ME_CONFIG_MONGODB_ADMINPASSWORD: ${PASSWORD}
-      ME_CONFIG_MONGODB_URL: mongodb://${USERNAME}:${PASSWORD}@mongo:27017/
-  # cassandra:
-  #   image: cassandra:4.0
-  #   ports:
-  #     - 9042:9042
-  #   volumes:
-  #     - ~/apps/cassandra:/var/lib/cassandra
-  #   environment:
-  #     - CASSANDRA_CLUSTER_NAME=citizix
+      COUCHDB_USER: ${USERNAME}
+      COUCHDB_PASSWORD: ${PASSWORD}
 volumes:
   cache:
     driver: local
