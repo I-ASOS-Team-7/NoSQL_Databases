@@ -21,6 +21,7 @@ class MongoDbDAO(DAO):
         """
         super().__init__()
 
+        self.__database_type: str = 'MongoDB'
         self.__port: int = 27017
         self.__connection: MongoClient = self.create_connection(
             username=os.getenv('USERNAME'),
@@ -77,7 +78,7 @@ class MongoDbDAO(DAO):
                 .insert_many(kwargs['data'])
             )
             self.__statistics.add_execution_time(
-                database_type='MongoDB',
+                database_type=self.__database_type,
                 database=kwargs['database'],
                 dataset=kwargs['collection'],
                 action='insert',
@@ -104,7 +105,7 @@ class MongoDbDAO(DAO):
             )
         )
         self.__statistics.add_execution_time(
-            database_type='MongoDB',
+            database_type=self.__database_type,
             database=kwargs['database'],
             dataset=kwargs['collection'],
             action='update',
@@ -124,7 +125,7 @@ class MongoDbDAO(DAO):
             .delete_many({})
         )
         self.__statistics.add_execution_time(
-            database_type='MongoDB',
+            database_type=self.__database_type,
             database=kwargs['database'],
             dataset=kwargs['collection'],
             action='delete',
