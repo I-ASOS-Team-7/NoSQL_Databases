@@ -44,11 +44,11 @@ class RedisDAO(DAO):
             **kwargs (str): Keyword Arguments ('database' and 'collection' 
             expected).
         """
-        start_time = time.time()
-
         database_name = '_'.join(
             [kwargs['database'], kwargs['collection']]
         ).lower()
+
+        start_time = time.time()
 
         for key in self.__connection.scan_iter(f'{database_name}*'):
             print(self.__connection.json().get(key))

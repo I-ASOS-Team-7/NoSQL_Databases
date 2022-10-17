@@ -60,9 +60,20 @@ class MongoDbDAO(DAO):
         """
         collection = self.__connection[kwargs['database']
                                        ][kwargs['collection']]
+        
+        start_time = time.time()
 
         for entry in collection.find():
             print(entry)
+
+        self.__statistics.add_execution_time(
+            database_type=self.__database_type,
+            database=kwargs['database'],
+            dataset=kwargs['collection'],
+            action='read',
+            time=time.time() - start_time
+        )
+
 
     def insert_data(self, **kwargs: Union[str, List[dict]]) -> None:
         """Inserts entries to Collection.

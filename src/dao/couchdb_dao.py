@@ -53,8 +53,19 @@ class CouchDbDAO(DAO):
             '_'.join([kwargs['database'], kwargs['collection']]).lower()
         )
 
+        start_time = time.time()
+
         for _id in self.__connection[database_name]:
             print(self.__connection[database_name][_id])
+
+        self.__statistics.add_execution_time(
+            database_type=self.__database_type,
+            database=kwargs['database'],
+            dataset=kwargs['collection'],
+            action='read',
+            time=time.time() - start_time
+        )
+
 
     def insert_data(self, **kwargs) -> None:
         """Inserts Document to Database.
@@ -74,10 +85,11 @@ class CouchDbDAO(DAO):
             **kwargs (Union[str, List[dict]]): Keyword Arguments ('database',
             'collection', 'key' and 'new_value' expected).
         """
-        start_time = time.time()
         database_name = (
             '_'.join([kwargs['database'], kwargs['collection']]).lower()
         )
+
+        start_time = time.time()
 
         doc_ids = kwargs['doc_ids']
         if doc_ids is None or len(doc_ids) == 0:
