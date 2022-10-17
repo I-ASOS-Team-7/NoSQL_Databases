@@ -3,29 +3,29 @@ from dao.dao import DAO
 
 class RedisDAO(DAO):
 
-    def __init__(self) -> None:
-        super().__init__()
+	def __init__(self) -> None:
+		super().__init__()
 
-    def create_connection(self, **kwargs):
-        # TODO - Docstring
-        pass
+	def create_connection(self, **kwargs):
+		# TODO - Docstring
+		pass
 
-    def read_data(self, **kwargs):
-        # TODO - Docstring
-        pass
+	def read_data(self, **kwargs):
+		# TODO - Docstring
+		pass
 
-    def insert_data(self, **kwargs):
-        # TODO - Docstring
-        pass
+	def insert_data(self, **kwargs):
+		# TODO - Docstring
+		pass
 
-    def update_data(self, **kwargs):
-        # TODO - Docstring
-        pass
+	def update_data(self, **kwargs):
+		# TODO - Docstring
+		pass
 
-    def delete_data(self, **kwargs):
-        # TODO - Docstring
-        pass
+	def delete_data(self, **kwargs):
+		# TODO - Docstring
+		pass
 
-    def close_connection(self):
-        # TODO - Docstring
-        pass
+	def close_connection(self):
+		# TODO - Docstring
+		pass
