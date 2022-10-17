@@ -6,6 +6,7 @@ from dao.mongo_db_dao import MongoDbDAO
 from dao.redis_dao import RedisDAO
 from stats.statistics import Statistics
 
+
 def run_couchdb(
 	statistics: Statistics,
 	iterations: Optional[int] = 10
@@ -39,17 +40,14 @@ def run_couchdb(
 					key='address',
 					new_value=f'Docker_{iteration}'
 				)
-
-				couchdb_dao.read_data(
-					database=os.getenv('DB_NAME'),
-					collection=collection.split('.')[0]
-				)
-
+	
 		for collection in collections:
-		    couchdb_dao.delete_data(
-		        database=os.getenv('DB_NAME'),
-		        collection=collection.split('.')[0]
-		    )
+			couchdb_dao.delete_data(
+				database=os.getenv('DB_NAME'),
+				collection=collection.split('.')[0]
+			)
+
+	couchdb_dao.close_connection()
 
 
 def run_mongodb(
@@ -99,12 +97,8 @@ def run_mongodb(
 				new_values=value['new_values']
 			)
 
-		mongodb_dao.read_data(
-		    database=os.getenv('DB_NAME'),
-		    collection='data'
-		)
-
 	mongodb_dao.close_connection()
+
 
 def run_redis(
 	statistics: Statistics,
@@ -144,7 +138,4 @@ def run_redis(
 			new_value=f'Docker_{iteration}'
 		)
 
-		redis_dao.read_data(
-			database=os.getenv('DB_NAME'),
-			collection='data'
-		)
+	redis_dao.close_connection()
