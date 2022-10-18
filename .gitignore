@@ -52,4 +52,4 @@ wheels/
 *.egg
 
 # Folders
-data/*
+data/json_data/*
