@@ -22,7 +22,7 @@ class CouchDbDAO(DAO):
         
         self.__database_type: str = 'CouchDB'
         self.__connection: Server = self.create_connection(
-            username=os.getenv('USERNAME'),
+            username=os.getenv('ASOS_USERNAME'),
             password=os.getenv('PASSWORD')
         )
         self.__statistics: Statistics = statistics

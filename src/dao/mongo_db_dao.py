@@ -24,7 +24,7 @@ class MongoDbDAO(DAO):
         self.__database_type: str = 'MongoDB'
         self.__port: int = 27017
         self.__connection: MongoClient = self.create_connection(
-            username=os.getenv('USERNAME'),
+            username=os.getenv('ASOS_USERNAME'),
             password=os.getenv('PASSWORD')
         )
         self.__statistics: Statistics = statistics
