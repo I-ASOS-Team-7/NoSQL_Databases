@@ -111,6 +111,8 @@ def run_neo4j() -> None:
 		data_folder=neo4j_path
 	)
 
+	neo4j_dao.delete_data()
+
 
 def run_redis(
 	statistics: Statistics,

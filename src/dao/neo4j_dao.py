@@ -1,16 +1,23 @@
+# SOURCE: https://towardsdatascience.com/create-a-graph-database-in-neo4j-using-python-4172d40f89c4
+
 import os
 import time
+from typing import Tuple
 
 import pandas as pd
 
 from dao.dao import DAO
 from dao.neo4j_connection import Neo4jConnection
+from stats.statistics import Statistics
 from utils.archive_utils import load_and_clean_archive_data
 
 
 class Neo4jDAO(DAO):
 
+	"""Represents Neo4j Data Access Object."""
+
 	def __init__(self) -> None:
+		"""Initializes the Neo4jDAO Class."""
 		super().__init__()
 
 		self.__port: int = 7687
@@ -20,34 +27,75 @@ class Neo4jDAO(DAO):
 		)
 
 	def create_connection(self, **kwargs):
-		# TODO - Docstring
+		"""Creates new Neo4j Connection.
+
+        Returns:
+            Neo4jConnection: New Neo4j Connection.
+        """
 		return Neo4jConnection(
 			uri=f'neo4j://localhost:{self.__port}/',
 		)
 
 	def read_data(self, **kwargs):
-		# TODO - Docstring
+		"""Reads every entry in Graph."""
 		pass
 
 	def insert_data(self, **kwargs):
-		# TODO - Docstring
-		pass
+		"""Inserts data to Graph."""
+		statistics = Statistics(iterations=1)
+
+		start_time = time.time()
+		self.__add_categories(self.__categories)
+		statistics.add_execution_time(
+			database_type='Neo4j',
+			database='Default',
+			dataset='Categories',
+			action='insert',
+			time=time.time() - start_time
+		)
+
+		start_time = time.time()
+		self.__add_authors(self.__authors)
+		statistics.add_execution_time(
+			database_type='Neo4j',
+			database='Default',
+			dataset='Authors',
+			action='insert',
+			time=time.time() - start_time
+		)
+
+		start_time = time.time()
+		self.__add_papers(self.__data)
+		statistics.add_execution_time(
+			database_type='Neo4j',
+			database='Default',
+			dataset='Papers',
+			action='insert',
+			time=time.time() - start_time
+		)			
+		
+		statistics.display_statistics()
+		statistics.export_plots()
 
 	def update_data(self, **kwargs):
-		# TODO - Docstring
+		"""Updates data in Graph."""
 		pass
 
 	def delete_data(self, **kwargs):
-		# TODO - Docstring
-		pass
+		"""Deletes every data in every Graph."""
+		query = '''
+				MATCH (n)
+				DETACH DELETE n
+				'''
+
+		self.__connection.query(query)
 
 	def close_connection(self):
-		# TODO - Docstring
+		"""Closes Neo4j Connection."""
 		self.__connection.close()
 		self.__connection = None
 
 	def __create_tables(self) -> None:
-		# TODO - Docstring
 		self.__connection.query('CREATE CONSTRAINT papers IF NOT EXISTS ON (p:Paper) ASSERT p.id IS UNIQUE')
 		self.__connection.query('CREATE CONSTRAINT authors IF NOT EXISTS ON (a:Author) ASSERT a.name IS UNIQUE')
 		self.__connection.query('CREATE CONSTRAINT categories IF NOT EXISTS ON (c:Category) ASSERT c.category IS UNIQUE')
@@ -117,44 +165,48 @@ class Neo4jDAO(DAO):
 					"batches":batch, 
 					"time":time.time()-start}
 			print(result)
-			
+
 		return result
 
+	def __process_data(
+		self, 
+		data: pd.DataFrame
+	) -> Tuple[pd.DataFrame, pd.DataFrame]:
+		categories = pd.DataFrame(data[['category_list']])
+		categories.rename(
+			columns={'category_list':'category'},
+			inplace=True
+		)
+		categories = (
+			categories.explode('category').drop_duplicates(subset=['category'])
+		)
+
+		authors = pd.DataFrame(data[['cleaned_authors_list']])
+		authors.rename(
+			columns={'cleaned_authors_list':'author'},
+			inplace=True
+		)
+		authors=authors.explode('author').drop_duplicates(subset=['author'])
+
+		return categories, authors
+
 	def populate_database(self, data_folder: str) -> None:
-		# TODO - Docstring
+		"""Populates Neo4j Database from JSON Files in Data Folder.
+
+        Args:
+            data_folder (str): Data Folder Path.
+        """
 		for file in os.listdir(data_folder):
 			self.__create_tables()
-			data = load_and_clean_archive_data(
+			self.__data = load_and_clean_archive_data(
 				file_path=os.path.join(
 					data_folder,
 					file
 				),
 				lines=100000
+			)		
+			self.__categories, self.__authors = self.__process_data(
+				data=self.__data
 			)
 			
-			print(data)
-			categories = pd.DataFrame(data[['category_list']])
-			categories.rename(columns={'category_list':'category'},
-							inplace=True)
-			categories = categories.explode('category') \
-								.drop_duplicates(subset=['category'])
-
-			print(categories)
-
-			authors = pd.DataFrame(data[['cleaned_authors_list']])
-			authors.rename(columns={'cleaned_authors_list':'author'},
-						inplace=True)
-			authors=authors.explode('author').drop_duplicates(subset=['author'])
-			print(authors)
-
-			self.__add_categories(categories)
-			self.__add_authors(authors)
-			self.__add_papers(data)
-
-			query_string = '''
-			MATCH (c:Category) 
-			RETURN c.category_name, SIZE(()-[:IN_CATEGORY]->(c)) AS inDegree 
-			ORDER BY inDegree DESC LIMIT 20
-			'''
-			top_cat_df = pd.DataFrame([dict(_) for _ in self.__connection.query(query_string)])
-			print(top_cat_df.head(20))
+			self.insert_data()
