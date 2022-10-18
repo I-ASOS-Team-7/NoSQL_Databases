@@ -2,7 +2,7 @@
 
 ## **About The Project**
 
-This Project was created during [I-ASOS Software Architecture](https://uim.fei.stuba.sk/predmet/i-asos/) course at [FEI STU](https://www.fei.stuba.sk/english.html?page_id=793). The main goal of it was to experiment and compare with different types of NoSQL Databases. We have experimented with [CouchDB](https://couchdb.apache.org/), [Neo4j](https://neo4j.com/), [MongoDB](https://www.mongodb.com/) and [Redis](https://redis.io/).
+This Project was created during [I-ASOS Software Architecture](https://uim.fei.stuba.sk/predmet/i-asos/) course at [FEI STU](https://www.fei.stuba.sk/english.html?page_id=793). The main goal of it was to compare and experiment with different types of NoSQL Databases. We have experimented with [CouchDB](https://couchdb.apache.org/), [Neo4j](https://neo4j.com/), [MongoDB](https://www.mongodb.com/) and [Redis](https://redis.io/).
 
 Check out the **[Documentation](https://github.com/I-ASOS-Team-7/NoSQL_Databases/blob/main/doc/I-ASOS_-_NoSQL_Databases_Documentation.pdf)** and **[Presentation](https://github.com/I-ASOS-Team-7/NoSQL_Databases/blob/main/doc/I-ASOS_-_NoSQL_Databases_Presentation.pdf)** for more information.
 
