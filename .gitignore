@@ -53,3 +53,4 @@ wheels/
 
 # Folders
 data/json_data/*
+data/archive/*
