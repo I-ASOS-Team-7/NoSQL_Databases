@@ -4,7 +4,7 @@
 
 This Project was created during [I-ASOS Software Architecture](https://uim.fei.stuba.sk/predmet/i-asos/) course at [FEI STU](https://www.fei.stuba.sk/english.html?page_id=793). The main goal of it was to experiment and compare with different types of NoSQL Databases. We have experimented with [CouchDB](https://couchdb.apache.org/), [Neo4j](https://neo4j.com/), [MongoDB](https://www.mongodb.com/) and [Redis](https://redis.io/).
 
-Check out the **[Documentation](#)** and **[Presentation](#)** for more information.
+Check out the **[Documentation](https://github.com/I-ASOS-Team-7/NoSQL_Databases/blob/main/doc/I-ASOS_-_NoSQL_Databases_Documentation.pdf)** and **[Presentation](https://github.com/I-ASOS-Team-7/NoSQL_Databases/blob/main/doc/I-ASOS_-_NoSQL_Databases_Presentation.pdf)** for more information.
 
 ### **Built With**
 
@@ -70,7 +70,7 @@ Check out the **[Documentation](#)** and **[Presentation](#)** for more informat
 
 ## **License**
 
-Distributed under the **MIT License**. See [LICENSE]() for more information.
+Distributed under the **MIT License**. See [LICENSE](https://github.com/I-ASOS-Team-7/NoSQL_Databases/blob/main/LICENSE) for more information.
 
 ## **Acknowledgments**
 * [CJ Sullivan: Create a graph database in Neo4j using Python (Towards Data Science Article)](https://towardsdatascience.com/create-a-graph-database-in-neo4j-using-python-4172d40f89c4)
