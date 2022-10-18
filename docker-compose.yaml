@@ -1,6 +1,6 @@
 version: "3.9"
 networks:
-  app-network:
+  neo4j-network:
     driver: bridge
 services:
   couchdb:
@@ -10,7 +10,7 @@ services:
     env_file:
       - .env
     environment:
-      COUCHDB_USER: ${USERNAME}
+      COUCHDB_USER: ${ASOS_USERNAME}
       COUCHDB_PASSWORD: ${PASSWORD}
   mongo:
     image: mongo
@@ -18,13 +18,12 @@ services:
     ports:
       - "27017:27017"
   neo4j:
-    image: bitnami/neo4j:latest
-    # networks:
-    #   - neo4j-network
+    image: neo4j:latest
     ports:
       - "7474:7474"
-      - "7473:7473"
       - "7687:7687"
+    networks:
+      - neo4j-network
     environment:
       NEO4J_AUTH: none
   redis-redisjson:
