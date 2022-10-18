@@ -1,7 +1,7 @@
 from dotenv import load_dotenv
 
 from stats.statistics import Statistics
-from utils import (
+from utils.utils import (
 	run_couchdb,
 	run_mongodb,
 	run_neo4j,
