@@ -1,0 +1,37 @@
+version: "3.9"
+networks:
+  neo4j-network:
+    driver: bridge
+services:
+  couchdb:
+    image: couchdb:latest
+    ports:
+      - "5984:5984"
+    env_file:
+      - .env
+    environment:
+      COUCHDB_USER: ${ASOS_USERNAME}
+      COUCHDB_PASSWORD: ${PASSWORD}
+  mongo:
+    image: mongo
+    restart: always
+    ports:
+      - "27017:27017"
+  neo4j:
+    image: neo4j:latest
+    ports:
+      - "7474:7474"
+      - "7687:7687"
+    networks:
+      - neo4j-network
+    environment:
+      NEO4J_AUTH: none
+  redis-redisjson:
+    container_name:  redis-redisjson
+    hostname:  redis-redisjson
+    image: redislabs/rejson
+    ports: 
+      - 6379:6379
+volumes:
+  cache:
+    driver: local
