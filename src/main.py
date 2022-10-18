@@ -11,15 +11,13 @@ from utils import (
 
 if __name__ == '__main__':
 	load_dotenv()
+	iterations = 50
 
-	statistics = Statistics()
+	statistics = Statistics(iterations)
 
-	iterations = 1
-
-	# run_couchdb(statistics, iterations)
+	run_couchdb(statistics, iterations)
 	run_neo4j()
-	# run_mongodb(statistics, iterations)
-	# run_redis(statistics, iterations)
+	run_mongodb(statistics, iterations)
+	run_redis(statistics, iterations)
 
-
-	statistics.export_data_to_csv()
+	statistics()
