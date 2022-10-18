@@ -1,6 +1,8 @@
 couchdb
 neo4j
+kaleido
 pandas
+plotly
 pymongo
 python-dotenv
 redis
