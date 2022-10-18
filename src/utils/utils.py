@@ -103,7 +103,13 @@ def run_mongodb(
 
 def run_neo4j() -> None:
 	"""Run basic Neo4j DAO Functionalities."""
+	neo4j_path = os.path.join(os.getcwd(), 'data', 'archive')
+
 	neo4j_dao = Neo4jDAO()
+
+	neo4j_dao.populate_database(
+		data_folder=neo4j_path
+	)
 
 
 def run_redis(
